@@ -1,5 +1,6 @@
 #include "CppUtilities/Network/Socket.h"
 #include "CppUtilities/Network/InetAddress.h"
+#include "CppUtilities/Core/StatusCodes.h"
 
 #ifdef WIN32
 #include <Ws2tcpip.h>
@@ -23,14 +24,14 @@ Socket::Socket() throw(SocketException) {
 #ifdef WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
-        throw SocketException("Error initializing Winsock");
+        throw exception(SocketException, "Error initializing Winsock", ERROR_INTERNAL);
     }
     winsockCleanup= true;
 #endif
 
     tcpSocket= socket(AF_INET, SOCK_STREAM, 0);
     if (tcpSocket < 0) {
-        throw SocketException("Cannot create TCP socket", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot create TCP socket", ERROR_INTERNAL);
     }
 
     connected= false;
@@ -72,10 +73,10 @@ void Socket::close() {
 
 void Socket::connect(const std::string& hostname, int port) throw(SocketException) {
     if (closed) {
-        throw SocketException("Socket is closed", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Socket is closed", ERROR_USAGE);
     }
     if (connected) {
-        throw SocketException("Already connected to a remote machine", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Already connected to a remote machine", ERROR_USAGE);
     }
 
     bool success= false;
@@ -94,7 +95,7 @@ void Socket::connect(const std::string& hostname, int port) throw(SocketExceptio
         stringstream errorMsg(stringstream::out);
 
         errorMsg << "Cannot connect to " << hostname << ":" << port;
-        throw SocketException(errorMsg.str(), __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, errorMsg.str(), ERROR_INTERNAL);
     }
 
     connected= true;
@@ -102,10 +103,10 @@ void Socket::connect(const std::string& hostname, int port) throw(SocketExceptio
 
 void Socket::write(const std::string& msg) throw(SocketException) {
     if (closed) {
-        throw SocketException("Socket closed, cannot write", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Socket closed, cannot write", ERROR_USAGE);
     }
     if (!connected) {
-        throw SocketException("Socket not connected, cannot write", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Socket not connected, cannot write", ERROR_USAGE);
     }
 
     int nBytes;
@@ -116,16 +117,16 @@ void Socket::write(const std::string& msg) throw(SocketException) {
     nBytes= send(tcpSocket, msg.c_str(), msg.length(), 0);
 #endif
     if (nBytes < 0) {
-        throw SocketException("Cannot write to socket", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot write to socket", ERROR_INTERNAL);
     }
 }
 
 std::string Socket::read(unsigned int nBytes) throw(SocketException) {
     if (closed) {
-        throw SocketException("Socket closed, cannot read", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Socket closed, cannot read", ERROR_USAGE);
     }
     if (!connected) {
-        throw SocketException("Socket not connected, cannot read", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Socket not connected, cannot read", ERROR_USAGE);
     }
 
     string msg;
@@ -140,7 +141,7 @@ std::string Socket::read(unsigned int nBytes) throw(SocketException) {
 #endif
 
         if (readBytes < 0) {
-            throw SocketException("Cannot read from socket", __FUNCTION__, __LINE__, 1);
+            throw exception(SocketException, "Cannot read from socket", ERROR_INTERNAL);
         } else {
             /**
 * Throw out \\n in a \\r\\n sequence. The readLine function sets

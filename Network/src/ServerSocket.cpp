@@ -1,4 +1,5 @@
 #include "CppUtilities/Network/ServerSocket.h"
+#include "CppUtilities/Core/StatusCodes.h"
 
 #include <sstream>
 #ifdef WIN32
@@ -19,13 +20,13 @@ ServerSocket::ServerSocket() throw(SocketException) {
 #ifdef WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
-        throw SocketException("Error initializing Winsock", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Error initializing Winsock", ERROR_INTERNAL);
     }
 #endif
 
     tcpSocket= socket(AF_INET, SOCK_STREAM, 0);
     if (tcpSocket < 0) {
-        throw SocketException("Cannot create TCP Socket", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot create TCP Socket", ERROR_INTERNAL);
     }
     bound= false;
     closed= false;
@@ -41,13 +42,13 @@ ServerSocket::~ServerSocket() {
 
 void ServerSocket::bind(int port) throw(SocketException) {
     if (closed) {
-        throw SocketException("Cannot bind to port: server socket is closed", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot bind to port: server socket is closed", ERROR_USAGE);
     }
     if (bound) {
         stringstream errorMsg(stringstream::out);
 
         errorMsg << "Socket already bound to port " << ntohs(serverInfo.sin_port);
-        throw SocketException(errorMsg.str(), __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, errorMsg.str(), ERROR_USAGE);
     }
 
     serverInfo.sin_family= AF_INET;
@@ -58,7 +59,7 @@ void ServerSocket::bind(int port) throw(SocketException) {
         stringstream errorMsg(stringstream::out);
 
         errorMsg << "Cannot bind to port " << port;
-        throw SocketException(errorMsg.str(), __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, errorMsg.str(), ERROR_CONFIG);
     }
     listen(tcpSocket, 5);
     bound= true;
@@ -66,10 +67,10 @@ void ServerSocket::bind(int port) throw(SocketException) {
 
 Socket ServerSocket::accept() throw(SocketException) {
     if (!bound) {
-        throw SocketException("Server socket not bound to a port", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Server socket not bound to a port", ERROR_USAGE);
     }
     if (closed) {
-        throw SocketException("Cannot accept connections: server socket is closed", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot accept connections: server socket is closed", ERROR_USAGE);
     }
 
     int clientfd;
@@ -79,7 +80,7 @@ Socket ServerSocket::accept() throw(SocketException) {
 
     clientfd= ::accept(tcpSocket, (sockaddr *) &clientAddr, &structSize);
     if (clientfd < 0) {
-        throw SocketException("Cannot accept connection", __FUNCTION__, __LINE__, 1);
+        throw exception(SocketException, "Cannot accept connection", ERROR_INTERNAL);
     }
     return Socket(clientfd, &clientAddr);
 }

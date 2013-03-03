@@ -1,4 +1,5 @@
 #include "CppUtilities/Network/InetAddress.h"
+#include "CppUtilities/Core/StatusCodes.h"
 
 #include <mutex>
 #include <string.h>
@@ -35,7 +36,7 @@ const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(
     hints.ai_family= AF_INET;
 
     if ((err= getaddrinfo(hostName.c_str(), NULL, &hints, &res)) != 0) {
-        throw UnknownHostException(hostName, __FUNCTION__, __LINE__, 1);
+        throw exception(UnknownHostException, "Cannot resolve: " + hostName, ERROR_CONFIG);
     }
 
     for(next= res; next != NULL; next= next->ai_next) {

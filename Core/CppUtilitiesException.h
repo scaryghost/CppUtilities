@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 
+#define exception(class, msg, status) class(msg, __FUNCTION__, __LINE__, status)
+
 namespace etsai {
 namespace cpputilities {
 
