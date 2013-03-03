@@ -1,8 +1,6 @@
 #ifndef ETSAI_CPPUTILITIES_INTERNALEXCEPTION
 #define ETSAI_CPPUTILITIES_INTERNALEXCEPTION
 
-#include "CppUtilities/Exception/CppUtilitiesException.h"
-
 #include <exception>
 #include <sstream>
 #include <string>
@@ -38,7 +36,7 @@ public:
      * Get the status code
      * @return Exception's status code
      */
-    int status() const throw() {
+    int getStatus() const throw() {
         return status;
     }
 protected:
@@ -50,10 +48,11 @@ protected:
      * @param   lineNo      Line nuimber the exception was thrown at
      * @param   status      Status code to associate with the exception
      */
-    CppUtilitiesException(const string& msg, const string& function, int lineNo, int status) {
+    CppUtilitiesException(const string& exceptionType, const string& msg, const string& function, int lineNo, int status) {
         stringstream formattedMsg;
 
         formattedMsg << exceptionType << " - " << msg << " (in " << function << " line " << lineNo << ")";
+        this->exceptionType= exceptionType;
         this->msg= formattedMsg.str();
         this->status= status;
     }
