@@ -1,0 +1,186 @@
+#include "CppUtilities/Network/Socket.h"
+#include "CppUtilities/Network/InetAddress.h"
+
+#ifdef WIN32
+#include <Ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
+#else
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
+#include <sstream>
+#include <vector>
+
+namespace etsai {
+namespace cpputilities {
+
+using std::string;
+using std::stringstream;
+using std::vector;
+
+Socket::Socket() throw(SocketException) {
+#ifdef WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
+        throw SocketException("Error initializing Winsock");
+    }
+    winsockCleanup= true;
+#endif
+
+    tcpSocket= socket(AF_INET, SOCK_STREAM, 0);
+    if (tcpSocket < 0) {
+        throw SocketException("Cannot create TCP socket", __FUNCTION__, __LINE__, 1);
+    }
+
+    connected= false;
+    closed= false;
+}
+
+Socket::Socket(const std::string& hostname, int port) throw(SocketException) : Socket() {
+    connect(hostname, port);
+}
+
+Socket::Socket(int tcpSocket, sockaddr_in *addr) {
+    this->tcpSocket= tcpSocket;
+    connectionInfo.sin_family= addr->sin_family;
+    connectionInfo.sin_port= addr->sin_port;
+    connectionInfo.sin_addr= addr->sin_addr;
+    
+    connected= true;
+    closed= false;
+#ifdef WIN32
+    winsockCleanup= false;
+#endif
+}
+
+Socket::~Socket() {
+    close();
+}
+
+void Socket::close() {
+#ifdef WIN32
+    closesocket(tcpSocket);
+    if (winsockCleanup) {
+        WSACleanup();
+    }
+#else
+    ::close(tcpSocket);
+#endif
+    closed= true;
+}
+
+void Socket::connect(const std::string& hostname, int port) throw(SocketException) {
+    if (closed) {
+        throw SocketException("Socket is closed", __FUNCTION__, __LINE__, 1);
+    }
+    if (connected) {
+        throw SocketException("Already connected to a remote machine", __FUNCTION__, __LINE__, 1);
+    }
+
+    bool success= false;
+    vector<InetAddress> results= InetAddress::getByName(hostname);
+    connectionInfo.sin_family= AF_INET;
+    connectionInfo.sin_port= htons(port);
+
+    for(auto it= results.begin(); !success && it != results.end(); it++) {
+        int result;
+
+        connectionInfo.sin_addr= it->getAddress();
+        result= ::connect(tcpSocket,(sockaddr *) &connectionInfo, sizeof(connectionInfo));
+        success= success || result >= 0;
+    }
+    if (!success) {
+        stringstream errorMsg(stringstream::out);
+
+        errorMsg << "Cannot connect to " << hostname << ":" << port;
+        throw SocketException(errorMsg.str(), __FUNCTION__, __LINE__, 1);
+    }
+
+    connected= true;
+}
+
+void Socket::write(const std::string& msg) throw(SocketException) {
+    if (closed) {
+        throw SocketException("Socket closed, cannot write", __FUNCTION__, __LINE__, 1);
+    }
+    if (!connected) {
+        throw SocketException("Socket not connected, cannot write", __FUNCTION__, __LINE__, 1);
+    }
+
+    int nBytes;
+
+#ifndef WIN32
+    nBytes= ::write(tcpSocket, msg.c_str(), msg.length());
+#else
+    nBytes= send(tcpSocket, msg.c_str(), msg.length(), 0);
+#endif
+    if (nBytes < 0) {
+        throw SocketException("Cannot write to socket", __FUNCTION__, __LINE__, 1);
+    }
+}
+
+std::string Socket::read(unsigned int nBytes) throw(SocketException) {
+    if (closed) {
+        throw SocketException("Socket closed, cannot read", __FUNCTION__, __LINE__, 1);
+    }
+    if (!connected) {
+        throw SocketException("Socket not connected, cannot read", __FUNCTION__, __LINE__, 1);
+    }
+
+    string msg;
+    char buffer[2]= {'\0', '\0'};
+    int readBytes;
+
+    do {
+#ifndef WIN32
+        readBytes= ::read(tcpSocket, buffer, sizeof(buffer) - 1);
+#else
+        readBytes= recv(tcpSocket, buffer, sizeof(buffer) - 1, 0);
+#endif
+
+        if (readBytes < 0) {
+            throw SocketException("Cannot read from socket", __FUNCTION__, __LINE__, 1);
+        } else {
+            /**
+* Throw out \\n in a \\r\\n sequence. The readLine function sets
+* readCarriage to true if \\r is read, then terminates. This only
+* applies to readLine. A normal read will consume everything
+*/
+            if (!readCarriage || buffer[0] != '\n') {
+                msg+= buffer;
+            }
+            readCarriage= false;
+        }
+    } while(msg.length() < nBytes && readBytes == sizeof(buffer)-1);
+
+    return msg;
+}
+
+std::string Socket::readLine() throw(SocketException) {
+    string msg, ch;
+    auto terminate= [this](string ch) -> bool {
+        readCarriage= ch == "\r";
+        return readCarriage || ch == "\n";
+    };
+
+    while(!terminate((ch= read(1)))) {
+        msg+= ch;
+    }
+    return msg;
+}
+
+bool Socket::isConnected() const {
+    return connected;
+}
+
+int Socket::getPort() const {
+    return ntohs(connectionInfo.sin_port);
+}
+
+std::string Socket::getAddress() const {
+    return inet_ntoa(connectionInfo.sin_addr);
+}
+
+}   //namespace cpputilities
+}   //namespace etsai
