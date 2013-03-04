@@ -8,6 +8,10 @@
 namespace etsai {
 namespace cpputilities {
 
+/**
+ * Sends messages to the console
+ * @author etsai
+ */
 class ConsoleHandler : public Handler {
 public:
     ConsoleHandler() : Handler(Level::INFO) {}
