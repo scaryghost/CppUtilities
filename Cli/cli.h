@@ -1,8 +1,8 @@
-#ifndef STOUGHTON1004LIB_CLI_H
-#define STOUGHTON1004LIB_CLI_H
+#ifndef ETSAI_CPPUTILITIES_CLI_H
+#define ETSAI_CPPUTILITIES_CLI_H
 
-#include "Stoughton1004Lib/CLI/Arguments.h"
-#include "Stoughton1004Lib/CLI/CLIBuilder.h"
-#include "Stoughton1004Lib/CLI/Option.h"
+#include "CppUtilities/Cli/Arguments.h"
+#include "CppUtilities/Cli/CliBuilder.h"
+#include "CppUtilities/Cli/Option.h"
 
 #endif

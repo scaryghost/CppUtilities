@@ -78,7 +78,7 @@ void CliBuilder::parse(int argc, char **argv) throw(CliOptionException) {
 
     for(auto it= options.begin(); it != options.end(); it++) {
         if ((it->second).required) {
-            throw exception(CliOptionException, "Required option was not used (" + it->second.optName + ")", ERROR_CONIG);
+            throw exception(CliOptionException, "Required option was not used (" + it->second.optName + ")", ERROR_CONFIG);
         }
     }
 }

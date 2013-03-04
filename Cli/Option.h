@@ -9,7 +9,7 @@
 namespace etsai {
 namespace cpputilities {
 
-class CLIBuilder;
+class CliBuilder;
 
 using std::string;
 using std::function;
@@ -76,17 +76,17 @@ public:
     Option& withRequired(bool required);
 
 private:
-    string optName;        ///< Short name of the option
+    string optName;             ///< Short name of the option
     char separator;             ///< Character separator for arguments
     unsigned int args;          ///< Max number of arguments to pass
     OptCallback callback;       ///< Callback action to be run if the option is matched
 
     bool required;              ///< True if option is required
-    string description;    ///< Description of the option
-    string argName;        ///< Argument name
-    string longOpt;        ///< Long name of the option
+    string description;         ///< Description of the option
+    string argName;             ///< Argument name
+    string longOpt;             ///< Long name of the option
 
-    friend class CLIBuilder;
+    friend class CliBuilder;    ///< Allow CliBuilder to access private member variables
 };  //class Option
 
 }   //namespace cpputilities
