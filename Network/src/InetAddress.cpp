@@ -5,10 +5,15 @@
 #include <string.h>
 #include <sys/types.h>
 
+#ifndef WIN32
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#else
+#include <ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
+#endif
 
 namespace etsai {
 namespace cpputilities {
@@ -19,13 +24,24 @@ using std::mutex;
 unordered_map<string, vector<InetAddress> > InetAddress::resultsCache;
 mutex resultsCacheMutex;
 
+#ifndef WIN32
 const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(UnknownHostException) {
+#else
+const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(UnknownHostException, SocketException) {
+#endif
     {
         lock_guard<mutex> lock(resultsCacheMutex);
         if (resultsCache.count(hostName) != 0) {
             return resultsCache[hostName];
         }
     }
+
+#ifdef WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
+        throw exception(SocketException, "Error initializing Winsock", ERROR_INTERNAL);
+    }
+#endif
 
     vector<InetAddress> results;
     addrinfo hints, *res, *next;
@@ -46,6 +62,10 @@ const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(
         addr.hostName= hostName;
         results.push_back(addr);
     }
+
+#ifdef WIN32
+    WSACleanup();
+#endif
 
     {
         lock_guard<mutex> lock(resultsCacheMutex);

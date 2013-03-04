@@ -2,12 +2,18 @@
 #define ETSAI_CPPUTILITIES_INETADDRESS
 
 #include "CppUtilities/Network/UnknownHostException.h"
+#include "CppUtilities/Network/SocketException.h"
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#ifndef WIN32
 #include <netinet/in.h>
+#else
+#include <WinSock2.h>
+#pragma warning( disable : 4290 )
+#endif
 
 namespace etsai {
 namespace cpputilities {
@@ -28,8 +34,13 @@ public:
      * @param hostName Host name to lookup
      * @return All IP addresses of the host name
      * @throw UnknownHostException If host name cannot be resolved
+     * @throw SocketException If WinSock failed to initialize (windows only)
      */
+#ifndef WIN32
     static const vector<InetAddress>& getByName(const string &hostName) throw(UnknownHostException);
+#else
+    static const vector<InetAddress>& getByName(const string &hostName) throw(UnknownHostException,SocketException);
+#endif
 
     /**
      * Get the host name of the local machine
