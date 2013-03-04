@@ -1,7 +1,7 @@
 #ifndef ETSAI_CPPUTILITIES_INETADDRESS
 #define ETSAI_CPPUTILITIES_INETADDRESS
 
-#include "CppUtilities/Network/src/UnknownHostException.h"
+#include "CppUtilities/Network/UnknownHostException.h"
 
 #include <string>
 #include <unordered_map>
