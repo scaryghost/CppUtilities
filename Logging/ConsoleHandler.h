@@ -8,6 +8,9 @@
 namespace etsai {
 namespace cpputilities {
 
+using std::cout;
+using std::endl;
+
 /**
  * Sends messages to the console
  * @author etsai
