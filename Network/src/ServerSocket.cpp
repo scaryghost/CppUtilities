@@ -15,6 +15,7 @@ namespace etsai {
 namespace cpputilities {
 
 using std::stringstream;
+using std::shared_ptr;
 
 ServerSocket::ServerSocket() throw(SocketException) {
 #ifdef WIN32
@@ -65,7 +66,7 @@ void ServerSocket::bind(int port) throw(SocketException) {
     bound= true;
 }
 
-Socket ServerSocket::accept() throw(SocketException) {
+shared_ptr<Socket> ServerSocket::accept() throw(SocketException) {
     if (!bound) {
         throw exception(SocketException, "Server socket not bound to a port", ERROR_USAGE);
     }
@@ -82,7 +83,7 @@ Socket ServerSocket::accept() throw(SocketException) {
     if (clientfd < 0) {
         throw exception(SocketException, "Cannot accept connection", ERROR_INTERNAL);
     }
-    return Socket(clientfd, &clientAddr);
+    return shared_ptr<Socket>(new Socket(clientfd, &clientAddr));
 }
 
 void ServerSocket::close() {

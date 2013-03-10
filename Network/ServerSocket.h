@@ -4,6 +4,8 @@
 #include "CppUtilities/Network/SocketException.h"
 #include "CppUtilities/Network/Socket.h"
 
+#include <memory>
+
 #ifdef WIN32
 #include <WinSock2.h>
 
@@ -15,6 +17,8 @@
 
 namespace etsai {
 namespace cpputilities {
+
+using std::shared_ptr;
 
 /**
  * Implements a server socket, waiting for TCP connections.  This class 
@@ -50,11 +54,11 @@ public:
     /**
      * Accepts an incoming connection to the server socket.  The function 
      * will block until a connection is available
-     * @return  Socket connecting to the client
+     * @return  Socket connecting to the client wrapped in a shared_ptr
      * @throws  SocketException If the socket is closed, not bound to a port, or cannot 
      *                          accept the incoming connection
      */
-    Socket accept() throw(SocketException);
+    shared_ptr<Socket> accept() throw(SocketException);
     /**
      * Closes the server socket
      */
