@@ -92,10 +92,7 @@ void Socket::connect(const std::string& hostname, int port) throw(SocketExceptio
         success= success || result >= 0;
     }
     if (!success) {
-        stringstream errorMsg(stringstream::out);
-
-        errorMsg << "Cannot connect to " << hostname << ":" << port;
-        throw exception(SocketException, errorMsg.str(), ERROR_INTERNAL);
+        throw exception(SocketException, "Cannot connect to " + getAddressPort(), ERROR_INTERNAL);
     }
 
     connected= true;
@@ -117,7 +114,7 @@ void Socket::write(const std::string& msg) throw(SocketException) {
     nBytes= send(tcpSocket, msg.c_str(), msg.length(), 0);
 #endif
     if (nBytes < 0) {
-        throw exception(SocketException, "Cannot write to socket", ERROR_INTERNAL);
+        throw exception(SocketException, "Cannot write to " + getAddressPort(), ERROR_INTERNAL);
     }
 }
 
@@ -141,12 +138,12 @@ std::string Socket::read(unsigned int nBytes) throw(SocketException) {
 #endif
 
         if (readBytes < 0) {
-            throw exception(SocketException, "Cannot read from socket", ERROR_INTERNAL);
+            throw exception(SocketException, "Cannot read from " + getAddressPort(), ERROR_INTERNAL);
         } else {
             /**
-* Throw out \\n in a \\r\\n sequence. The readLine function sets
-* readCarriage to true if \\r is read, then terminates. This only
-* applies to readLine. A normal read will consume everything
+             * Throw out \\n in a \\r\\n sequence. The readLine function sets
+             * readCarriage to true if \\r is read, then terminates. This only
+             * applies to readLine. A normal read will consume everything
 */
             if (!readCarriage || buffer[0] != '\n') {
                 msg+= buffer;
