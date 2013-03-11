@@ -183,5 +183,12 @@ std::string Socket::getAddress() const {
     return inet_ntoa(connectionInfo.sin_addr);
 }
 
+std::string Socket::getAddressPort() const {
+    stringstream msg;
+
+    msg << getAddress() << ":" << getPort();
+    return msg.str();
+}
+
 }   //namespace cpputilities
 }   //namespace etsai

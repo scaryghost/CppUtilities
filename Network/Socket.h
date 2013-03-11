@@ -93,6 +93,11 @@ public:
      * @return IP address connected to
      */
     std::string getAddress() const;
+    /**
+     * Returns the address and port of the remote connection in address:port form
+     * @return Address and port in address:port form
+     */
+    std::string getAddressPort() const;
 
 private:
     /**
