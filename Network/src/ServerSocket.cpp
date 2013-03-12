@@ -87,13 +87,15 @@ shared_ptr<Socket> ServerSocket::accept() throw(SocketException) {
 }
 
 void ServerSocket::close() {
+    if (!closed) {
 #ifdef WIN32
-    closesocket(tcpSocket);
-    WSACleanup();
+        closesocket(tcpSocket);
+        WSACleanup();
 #else
-    ::close(tcpSocket);
+        ::close(tcpSocket);
 #endif
-    closed= true;
+        closed= true;
+    }
 }
 
 bool ServerSocket::isBound() const {

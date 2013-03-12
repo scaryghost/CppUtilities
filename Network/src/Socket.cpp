@@ -60,15 +60,18 @@ Socket::~Socket() {
 }
 
 void Socket::close() {
+    if (!closed) {
 #ifdef WIN32
-    closesocket(tcpSocket);
-    if (winsockCleanup) {
-        WSACleanup();
-    }
+        closesocket(tcpSocket);
+        if (winsockCleanup) {
+            WSACleanup();
+        }
 #else
-    ::close(tcpSocket);
+        ::close(tcpSocket);
 #endif
-    closed= true;
+        closed= true;
+        connected= false;
+    }
 }
 
 void Socket::connect(const std::string& hostname, int port) throw(SocketException) {
@@ -170,6 +173,10 @@ std::string Socket::readLine() throw(SocketException) {
 
 bool Socket::isConnected() const {
     return connected;
+}
+
+bool Socket::isClosed() const {
+    return closed;
 }
 
 int Socket::getPort() const {

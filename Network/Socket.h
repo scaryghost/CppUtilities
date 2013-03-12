@@ -84,6 +84,11 @@ public:
      */
     bool isConnected() const;
     /**
+     * Returns the close state.  If the socket is closed, it cannot be used
+     * @return True if the socket is closed
+     */
+    bool isClosed() const;
+    /**
      * Returns the remote port number the socket is connected to
      * @return Port number connected to
      */
