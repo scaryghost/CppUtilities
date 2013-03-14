@@ -4,10 +4,12 @@
 #include "CppUtilities/Core/StatusCodes.h"
 
 #include <ctime>
+#include <iostream>
 
 namespace etsai {
 namespace cpputilities {
 
+using std::endl;
 using std::time_t;
 using std::tm;
 
@@ -48,8 +50,7 @@ void FileHandler::open() throw(FileException) {
 }
 
 bool FileHandler::publish(const std::string &msg) {
-    fd << msg << "\n";
-    fd.flush();
+    fd << msg << endl;
     return true;
 }
 
