@@ -92,6 +92,7 @@ void ServerSocket::close() {
         closesocket(tcpSocket);
         WSACleanup();
 #else
+        ::shutdown(tcpSocket, SHUT_RDWR);
         ::close(tcpSocket);
 #endif
         closed= true;

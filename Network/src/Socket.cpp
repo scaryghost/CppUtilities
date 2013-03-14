@@ -67,6 +67,7 @@ void Socket::close() {
             WSACleanup();
         }
 #else
+        ::shutdown(tcpSocket, SHUT_RDWR);
         ::close(tcpSocket);
 #endif
         closed= true;
