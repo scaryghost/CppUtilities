@@ -10,8 +10,10 @@ include $(MODULE_CONFIG)
 
 OBJS= $(patsubst %.cpp, %.o, $(SRCS))
 
-all: setup $(OBJS)
-	ar -cvq $(DIST)/$(LIB).a $(OBJS)
+all: setup $(DIST)/$(LIB)
+
+$(DIST)/$(LIB): $(OBJS)
+	ar -cvq $@ $(OBJS)
 
 %.o: %.cpp
 	$(CPPC) -c $(CPP_FLAGS) $(INC) $< -o $@
