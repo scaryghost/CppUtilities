@@ -89,6 +89,7 @@ shared_ptr<Socket> ServerSocket::accept() throw(SocketException) {
 void ServerSocket::close() {
     if (!closed) {
 #ifdef WIN32
+        ::shutdown(tcpSocket, SD_BOTH);
         closesocket(tcpSocket);
         WSACleanup();
 #else

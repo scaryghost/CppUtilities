@@ -8,25 +8,20 @@ namespace cpputilities {
 using std::lock_guard;
 using std::make_pair;
 using std::mutex;
-using std::string;
-using std::unordered_map;
-using std::unordered_set;
 
 unordered_map<string, Logger> Logger::loggers;
 static mutex loggerMutex;
 
 Logger* Logger::getLogger(const string &loggerName) {
-    {
-        lock_guard<mutex> lock(loggerMutex);
-        if (!loggers.count(loggerName)) {
-            loggers.insert(make_pair(loggerName, Logger()));
-        }
-        return &loggers.at(loggerName);
+    lock_guard<mutex> lock(loggerMutex);
+    if (!loggers.count(loggerName)) {
+        loggers.insert(make_pair(loggerName, Logger()));
     }
+    return &loggers.at(loggerName);
 }
 
-Logger::Logger() {
-    level= Level::INFO;
+Logger::Logger() :
+    level(Level::INFO) {
 }
 
 void Logger::addHandler(Handler *handler) {

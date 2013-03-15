@@ -36,17 +36,13 @@ public:
      * @throw UnknownHostException If host name cannot be resolved
      * @throw SocketException If WinSock failed to initialize (windows only)
      */
-#ifndef WIN32
-    static const vector<InetAddress>& getByName(const string &hostName) throw(UnknownHostException);
-#else
     static const vector<InetAddress>& getByName(const string &hostName) throw(UnknownHostException,SocketException);
-#endif
 
     /**
      * Get the host name of the local machine
      * @return Host name of the local machine
      */
-    static std::string getLocalHostName();
+    static std::string getLocalHostName() throw (SocketException);
 
     /**
      * Get the raw IP address of the object

@@ -62,6 +62,7 @@ Socket::~Socket() {
 void Socket::close() {
     if (!closed) {
 #ifdef WIN32
+        ::shutdown(tcpSocket, SD_BOTH);
         closesocket(tcpSocket);
         if (winsockCleanup) {
             WSACleanup();

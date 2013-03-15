@@ -24,11 +24,7 @@ using std::mutex;
 unordered_map<string, vector<InetAddress> > InetAddress::resultsCache;
 mutex resultsCacheMutex;
 
-#ifndef WIN32
-const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(UnknownHostException) {
-#else
 const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(UnknownHostException, SocketException) {
-#endif
     {
         lock_guard<mutex> lock(resultsCacheMutex);
         if (resultsCache.count(hostName) != 0) {
@@ -75,10 +71,20 @@ const vector<InetAddress>& InetAddress::getByName(const string &hostName) throw(
     }
 }
 
-string InetAddress::getLocalHostName() {
+string InetAddress::getLocalHostName() throw (SocketException) {
     char hostname[128];
 
+#ifdef WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) {
+        throw exception(SocketException, "Error initializing Winsock", ERROR_INTERNAL);
+    }
+#endif
     gethostname(hostname, sizeof(hostname));
+
+#ifdef WIN32
+    WSACleanup();
+#endif
     return hostname;
 }
 

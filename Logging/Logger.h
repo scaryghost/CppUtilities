@@ -22,7 +22,7 @@ using std::unordered_set;
 class Logger {
 public:
     /**
-     * Get the logger object associated with the given name
+     * Get the logger object associated with the given name.  The logger object is not dynamically allocated.
      * @param   loggerName  Name of the logger object
      * @return  Logger object of the given name
      */
@@ -67,7 +67,8 @@ public:
     Level getLevel() const;
 
 private:
-    static unordered_map<string, Logger> loggers;     ///< Map of all loggers created
+    Level level;                                ///< Logging level of the logger
+    unordered_set<Handler*> handlers;           ///< List of handlers tied to the logger
 
     /**
      * Constructs a logger with log level set to INFO.
@@ -75,8 +76,7 @@ private:
      */
     Logger();
 
-    unordered_set<Handler*> handlers;     ///< List of handlers tied to the logger
-    Level level;                               ///< Logging level of the logger
+    static unordered_map<string, Logger> loggers;     ///< Map of all loggers created
 };  //class Logger
 
 }   //namespace cpputilities

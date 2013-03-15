@@ -38,12 +38,12 @@ public:
      */
     Socket(const std::string& hostname, int port) throw(SocketException);
     /**
-     * Closes the socket
+     * Closes and shuts down the socket
      */
     ~Socket();
 
     /**
-     * Close the connection
+     * Close and shuts down the connection
      */
     void close();
     /**

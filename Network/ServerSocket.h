@@ -40,7 +40,7 @@ public:
      */
     ServerSocket(int port) throw(SocketException);
     /**
-     * Closes the socket
+     * Closes and shuts down the socket
      */
     ~ServerSocket();
 
@@ -60,7 +60,7 @@ public:
      */
     shared_ptr<Socket> accept() throw(SocketException);
     /**
-     * Closes the server socket
+     * Closes and shuts down the server socket
      */
     void close();
 
