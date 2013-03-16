@@ -43,6 +43,7 @@ FileHandler::~FileHandler() {
 }
 
 void FileHandler::open() throw(FileException) {
+    string fullpath(fileDir.getPath() + "/" + filename);
     if (fileDir.exists()) {
         if (!fileDir.isDirectory()) {
             throw exception(FileException, "Given path for logs is not a directory: " + fileDir.getPath(), ERROR_CONFIG);
@@ -51,9 +52,9 @@ void FileHandler::open() throw(FileException) {
         throw exception(FileException, "Error creating log directory: " + fileDir.getPath(), ERROR_CONFIG);
     }
 
-    fd.open(filename.c_str());
+    fd.open(fullpath.c_str());
     if (!fd) {
-        throw exception(FileException, "Error opening file: " + filename + " for logging", ERROR_CONFIG);
+        throw exception(FileException, "Error opening file: " + fullpath + " for logging", ERROR_CONFIG);
     }
 }
 

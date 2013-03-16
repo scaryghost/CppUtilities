@@ -13,7 +13,7 @@ OBJS= $(patsubst %.cpp, %.o, $(SRCS))
 all: $(DIST) $(DIST)/$(LIB)
 
 $(DIST)/$(LIB): $(OBJS)
-	ar -cvq $@ $(OBJS)
+	ar -cvru $@ $(OBJS)
 
 %.o: %.cpp
 	$(CPPC) -c $(CPP_FLAGS) $(INC) $< -o $@
