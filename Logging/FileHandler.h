@@ -7,6 +7,7 @@
 
 #include "CppUtilities/Logging/FileException.h"
 #include "CppUtilities/Logging/Handler.h"
+#include "CppUtilities/IO/File.h"
 
 #include <fstream>
 #include <string>
@@ -25,16 +26,20 @@ class FileHandler : public Handler {
 public:
     /**
      * Create a FileHandler with a generated log name based on the current date and time
-     * @throws  FileException   If the file failed to open
+     * @param   dir             Directory to store the log file in
+     * @throws  FileException   If the file failed to open, directory failed to be created, or 
+     *                          directory path is not a directory
      */
-    FileHandler() throw(FileException);
+    FileHandler(const string& dir) throw(FileException);
     /**
      * Create a FileHandler, writing to the given filename.  If the file exists, it will 
      * be overwritten
-     * @param   filename    Name of the log file to write to.
-     * @throw   FileException   If the file failed to open
+     * @param   dir             Directory to store the log file in
+     * @param   filename        Name of the log file to write to.
+     * @throw   FileException   If the file failed to open, directory failed to be created, or 
+     *                          directory path is not a directory
      */
-    FileHandler(const string filename) throw(FileException);
+    FileHandler(const string& dir, const string filename) throw(FileException);
     /**
      * Close file resources
      */
@@ -44,14 +49,15 @@ public:
     virtual void close();
 
 private:
+    File fileDir;           ///< Directory the log file will reside in
+    string filename;        ///< Name of the file to write to
+    ofstream fd;            ///< Log's file descriptor
+
     /**
      * Open the log file for writing.  Need this function since default constructor generates the filename
      * @throw   FileException   If the file failed to open
      */
     void open() throw(FileException);
-
-    string filename;       ///< Name of the file to write to
-    ofstream fd;           ///< Log's file descriptor
 };  //class FileHandler
 
 }   //namespace cpputilities

@@ -13,7 +13,7 @@ using std::endl;
 using std::time_t;
 using std::tm;
 
-FileHandler::FileHandler() throw(FileException) : Handler(Level::INFO) {
+FileHandler::FileHandler(const string& dir) throw(FileException) : Handler(Level::INFO), fileDir(dir) {
     time_t curr;
     const char* format= "_%Y-%m-%d_%H-%M-%S";
     char timeStamp[80];
@@ -33,8 +33,8 @@ FileHandler::FileHandler() throw(FileException) : Handler(Level::INFO) {
     open();
 }
 
-FileHandler::FileHandler(const std::string filename) throw(FileException) : Handler(Level::INFO) {
-    this->filename= filename;
+FileHandler::FileHandler(const string& dir, const std::string filename) throw(FileException) : Handler(Level::INFO),
+    fileDir(dir), filename(filename) {
     open();
 }
 
@@ -43,6 +43,14 @@ FileHandler::~FileHandler() {
 }
 
 void FileHandler::open() throw(FileException) {
+    if (fileDir.exists()) {
+        if (!fileDir.isDirectory()) {
+            throw exception(FileException, "Given path for logs is not a directory: " + fileDir.getPath(), ERROR_CONFIG);
+        }
+    } else if (!fileDir.mkdirs()) {
+        throw exception(FileException, "Error creating log directory: " + fileDir.getPath(), ERROR_CONFIG);
+    }
+
     fd.open(filename.c_str());
     if (!fd) {
         throw exception(FileException, "Error opening file: " + filename + " for logging", ERROR_CONFIG);
