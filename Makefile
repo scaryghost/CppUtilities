@@ -10,7 +10,7 @@ include $(MODULE_CONFIG)
 
 OBJS= $(patsubst %.cpp, %.o, $(SRCS))
 
-all: setup $(DIST)/$(LIB)
+all: $(DIST) $(DIST)/$(LIB)
 
 $(DIST)/$(LIB): $(OBJS)
 	ar -cvq $@ $(OBJS)
@@ -18,12 +18,12 @@ $(DIST)/$(LIB): $(OBJS)
 %.o: %.cpp
 	$(CPPC) -c $(CPP_FLAGS) $(INC) $< -o $@
 
-setup:
+$(DIST):
 	if [ ! -e $(DIST) ]; then \
 	    mkdir $(DIST); \
 	fi
 
-doc: setup
+doc: $(DIST)
 	doxygen
 
 clean:
