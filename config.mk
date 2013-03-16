@@ -1,7 +1,7 @@
 CPPC=g++
 DIST=dist
 LIB:=libcpputilities
-MODULES=Network Cli Logging
+MODULES=Network Cli Logging IO
 
 CPP_FLAGS:=-std=c++0x -Werror -Wall
 
