@@ -13,7 +13,7 @@ using std::endl;
 using std::time_t;
 using std::tm;
 
-FileHandler::FileHandler(const string& dir) throw(FileException) : Handler(Level::INFO), fileDir(dir) {
+FileHandler::FileHandler(const string& dir) throw(FileException) : Handler(Level::CONFIG), fileDir(dir) {
     time_t curr;
     const char* format= "_%Y-%m-%d_%H-%M-%S";
     char timeStamp[80];
@@ -33,7 +33,7 @@ FileHandler::FileHandler(const string& dir) throw(FileException) : Handler(Level
     open();
 }
 
-FileHandler::FileHandler(const string& dir, const std::string filename) throw(FileException) : Handler(Level::INFO),
+FileHandler::FileHandler(const string& dir, const std::string filename) throw(FileException) : Handler(Level::CONFIG),
     fileDir(dir), filename(filename) {
     open();
 }

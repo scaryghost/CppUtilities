@@ -17,7 +17,7 @@ using std::endl;
  */
 class ConsoleHandler : public Handler {
 public:
-    ConsoleHandler() : Handler(Level::INFO) {}
+    ConsoleHandler() : Handler(Level::CONFIG) {}
 
     virtual bool publish(const string &msg) { cout << msg << endl; return true; }
     virtual void close() { return; }

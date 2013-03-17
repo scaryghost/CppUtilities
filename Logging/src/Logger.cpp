@@ -21,7 +21,7 @@ Logger* Logger::getLogger(const string &loggerName) {
 }
 
 Logger::Logger() :
-    level(Level::INFO) {
+    level(Level::CONFIG) {
 }
 
 void Logger::addHandler(Handler *handler) {
