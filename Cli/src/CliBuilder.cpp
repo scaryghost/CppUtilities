@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <map>
 #include <sstream>
 
 namespace etsai {
@@ -11,6 +12,7 @@ namespace cpputilities {
 using std::cout;
 using std::endl;
 using std::exit;
+using std::map;
 using std::string;
 using std::stringstream;
 
@@ -35,6 +37,7 @@ CliBuilder& CliBuilder::addOption(const Option& opt) throw(CliOptionException) {
         }
         options[opt.longOpt]= opt;
     }
+    uniqueOpts.insert(&options[opt.optName]);
     return *this;
 }
 
@@ -85,26 +88,31 @@ void CliBuilder::parse(int argc, char **argv) throw(CliOptionException) {
 
 void CliBuilder::displayUsage() {
     unsigned int maxOptionLength= 0;
+    map<string,Option*> displayNames;
     auto displayOption= [](const Option& opt) -> string {
         string display= " ";
     
         display+= opt.optName;
+        if (!opt.longOpt.empty()) {
+            display+= ", " + opt.longOpt;
+        }
         if (!opt.argName.empty()) {
             display+= " <" + opt.argName + ">";
         }
         return display;
     };
 
-    for(auto it= options.begin(); it != options.end(); it++) {
-        auto displayLength= displayOption(it->second).size();
+    for(auto opt: uniqueOpts) {
+        string display(displayOption(*opt));
+        displayNames[display]= opt;
+        auto displayLength= display.size();
         maxOptionLength= maxOptionLength > displayLength ? maxOptionLength : displayLength;
     }
     cout << "usage: " << usage << endl;
-    for(auto it= options.begin(); it != options.end(); it++) {
-        string display= displayOption(it->second);
-        string filler(maxOptionLength - display.length(), ' ');
+    for(auto &names: displayNames) {
+        string filler(maxOptionLength - names.first.length(), ' ');
 
-        cout << display + filler << "\t" << it->second.description << endl;
+        cout << names.first << filler << "\t" << names.second->description << endl;
     }
     exit(0);
 }

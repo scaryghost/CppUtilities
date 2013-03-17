@@ -8,14 +8,16 @@
 #include "CppUtilities/Cli/CliOptionException.h"
 #include "CppUtilities/Cli/Option.h"
 
-#include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 namespace etsai {
 namespace cpputilities {
 
-using std::map;
 using std::string;
+using std::unordered_map;
+using std::unordered_set;
 
 /**
  * Builder for processing command line arguments
@@ -57,11 +59,12 @@ public:
     void displayUsage();
 
 private:
-    CliBuilder();                       ///< Default constructor.  Hidden to make singleton
+    CliBuilder();                               ///< Default constructor.  Hidden to make singleton
 
-    static CliBuilder instance;         ///< Single instance of the class
-    map<string, Option> options;        ///< Map of added options
-    string usage;                       ///< Usage message for the program
+    static CliBuilder instance;                 ///< Single instance of the class
+    unordered_map<string, Option> options;      ///< Maps unique names to option parameters
+    unordered_set<Option*> uniqueOpts;          ///< Set of unique options
+    string usage;                               ///< Usage message for the program
 };  //class CliBuilder
 
 }   //namesapce cpputilities
