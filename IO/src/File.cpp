@@ -1,7 +1,15 @@
 #include "CppUtilities/IO/File.h"
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 namespace etsai {
 namespace cpputilities {
+
+#ifdef WIN32
+using std::wstring;
+#endif
 
 File::File() : File(".") {
 }
@@ -12,6 +20,7 @@ File::File(const string& path) :
 }
 
 bool File::mkdir() {
+#ifndef WIN32
     bool valid(true);
 
     if (lastStatus) {
@@ -23,9 +32,14 @@ bool File::mkdir() {
     }
     lastStatus= stat(path.c_str(), &fileStat);
     return valid;
+#else
+    LPCWSTR pathWStr= wstring(path.begin(), path.end()).c_str();
+    return CreateDirectory(pathWStr, NULL) != FALSE;
+#endif
 }
 
 bool File::mkdirs() {
+#ifndef WIN32
     bool valid(true);
     size_t found= path.find_first_of("/");
 
@@ -44,14 +58,18 @@ bool File::mkdirs() {
     }
     lastStatus= stat(path.c_str(), &fileStat);
     return valid;
+#else
+    LPCWSTR pathWStr= wstring(path.begin(), path.end()).c_str();
+    return CreateDirectory(pathWStr, NULL) != FALSE;
+#endif
 }
 
 bool File::isDirectory() const {
-    return !lastStatus && S_ISDIR(fileStat.st_mode);
+    return !lastStatus && (fileStat.st_mode & S_IFDIR) == S_IFDIR;
 }
 
 bool File::isFile() const {
-    return !lastStatus && S_ISREG(fileStat.st_mode);
+    return !lastStatus && (fileStat.st_mode & S_IFREG) == S_IFREG;
 }
 
 bool File::exists() const {
