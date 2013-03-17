@@ -4,11 +4,18 @@
 #include <Windows.h>
 #endif
 
+#include <iostream>
+
 namespace etsai {
 namespace cpputilities {
 
 #ifdef WIN32
 using std::wstring;
+
+#define WIN_MKDIR \
+    wstring temp= wstring(path.begin(), path.end());\
+    LPCWSTR pathWStr= temp.c_str();\
+    return CreateDirectory(pathWStr, NULL) != FALSE;
 #endif
 
 File::File() : File(".") {
@@ -33,8 +40,7 @@ bool File::mkdir() {
     lastStatus= stat(path.c_str(), &fileStat);
     return valid;
 #else
-    LPCWSTR pathWStr= wstring(path.begin(), path.end()).c_str();
-    return CreateDirectory(pathWStr, NULL) != FALSE;
+    WIN_MKDIR
 #endif
 }
 
@@ -59,8 +65,7 @@ bool File::mkdirs() {
     lastStatus= stat(path.c_str(), &fileStat);
     return valid;
 #else
-    LPCWSTR pathWStr= wstring(path.begin(), path.end()).c_str();
-    return CreateDirectory(pathWStr, NULL) != FALSE;
+    WIN_MKDIR
 #endif
 }
 
