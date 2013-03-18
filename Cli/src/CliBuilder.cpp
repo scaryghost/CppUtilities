@@ -29,6 +29,7 @@ CliBuilder& CliBuilder::addOption(const Option& opt) throw(CliOptionException) {
         excep << "Option " << opt.optName << " already registered";
         throw exception(CliOptionException, excep.str(), ERROR_CONFIG);
     }
+    
     options[opt.optName]= opt;
     if (!opt.longOpt.empty()) {
         if (options.count(opt.longOpt) != 0) {
@@ -48,38 +49,40 @@ CliBuilder& CliBuilder::setUsage(const string& usage) {
 
 void CliBuilder::parse(int argc, char **argv) throw(CliOptionException) {
     int i= 0;
-    stringstream excep(stringstream::out);
+    unordered_map<string, Option> optionsCpy(options);
+    stringstream excep;
 
     while(i < argc) {
         if (argv[i][0] == '-') {
-            if (options.count(argv[i]) == 0) {
+            if (options.count(argv[i]) == 0 && !excep.tellp()) {
                 excep << "Invalid option read (" << argv[i] << ")";
-                throw exception(CliOptionException, excep.str(), ERROR_CONFIG);
-            }
-
-            Option opt= options[argv[i]];
-            Arguments args;
-
-            options.erase(argv[i]);
-            if (opt.args > 0) {
-                if (i + 1 < argc) {
-                    args.addArgs(argv[i+1], opt.separator);
-                }
-                if (args.size() != opt.args) {
-                    excep << "Option (" << opt.optName << ") requires " << opt.args << " arguments, was given " << args.size();
-                    throw exception(CliOptionException, excep.str(), ERROR_CONFIG);
-                }
-                i+= 2;
             } else {
-                i++;
-            }
-            opt.callback(args);
-        } else {
-            i++;
-        }
-    }
+                Option *opt= &options[argv[i]];
+                Arguments args;
 
-    for(auto it= options.begin(); it != options.end(); it++) {
+                optionsCpy.erase(argv[i]);
+                if (opt->args > 0) {
+                    i++;
+                    if (i < argc && argv[i][0] != '-') {
+                        args.addArgs(argv[i], opt->separator);
+                    } else {
+                        i--;
+                    }
+                    if (args.size() != opt->args && !excep.tellp()) {
+                        excep << "Option (" << opt->optName << ") requires " << opt->args << " arguments, was given " << args.size();
+                    }
+                }
+                if (args.size() == opt->args) {
+                    opt->callback(args);
+                }
+            }
+        }
+        i++;
+    }
+    if (excep.tellp()) {
+        throw exception(CliOptionException, excep.str(), ERROR_CONFIG);
+    }
+    for(auto it= optionsCpy.begin(); it != optionsCpy.end(); it++) {
         if ((it->second).required) {
             throw exception(CliOptionException, "Required option was not used (" + it->second.optName + ")", ERROR_CONFIG);
         }
