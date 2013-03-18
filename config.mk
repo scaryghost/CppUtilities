@@ -11,3 +11,7 @@ ifdef DEBUG
 else
     LIB:=$(LIB).a
 endif
+
+ifeq ($(32BIT), 1)
+	CPP_FLAGS+= -m32
+endif
