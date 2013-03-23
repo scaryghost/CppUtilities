@@ -36,11 +36,11 @@ void Logger::removeAllHandlers() {
     handlers.clear();
 }
 
-void Logger::setLevel(Level newLevel) {
+void Logger::setLevel(Level::LevelEnums newLevel) {
     level= newLevel;
 }
 
-void Logger::log(Level level, const string &msg) {
+void Logger::log(Level::LevelEnums level, const string &msg) {
     auto publish= [this, &level, &msg]() -> bool {
         for(auto it= handlers.begin(); it != handlers.end(); it++) {
             level >= (*it)->getLevel() && (*it)->publish(msg);
@@ -55,7 +55,7 @@ const unordered_set<Handler*>& Logger::getHandlers() const {
     return handlers;
 }
 
-Level Logger::getLevel() const {
+Level::LevelEnums Logger::getLevel() const {
     return level;
 }
 

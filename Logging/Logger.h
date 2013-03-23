@@ -46,14 +46,14 @@ public:
      * Sets the logging level
      * @param   newLevel    New level of the logger
      */
-    void setLevel(Level newLevel);
+    void setLevel(Level::LevelEnums newLevel);
     /**
      * Log a message of the specified level.  If a message's log level is below the set level, 
      * the message will not be passed on to the handlers
      * @param   level   The message's log level
      * @param   msg     Message to log
      */
-    void log(Level level, const string &msg);
+    void log(Level::LevelEnums level, const string &msg);
 
     /**
      * Get a reference to the handlers associated with the logger
@@ -64,10 +64,10 @@ public:
      * Get the log level of the logger
      * @return Logging level
      */
-    Level getLevel() const;
+    Level::LevelEnums getLevel() const;
 
 private:
-    Level level;                                ///< Logging level of the logger
+    Level::LevelEnums level;                                ///< Logging level of the logger
     unordered_set<Handler*> handlers;           ///< List of handlers tied to the logger
 
     /**

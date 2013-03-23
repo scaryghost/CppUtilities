@@ -39,22 +39,22 @@ public:
      * Set the logging level for the handler
      * @param   newLevel   Logging level to set
      */
-    void setLevel(Level newLevel) { level= newLevel; }
+    void setLevel(Level::LevelEnums newLevel) { level= newLevel; }
 
     /**
      * Get the logging level for the handler
      * @return Log level
      */
-    Level getLevel() const { return level; }
+    Level::LevelEnums getLevel() const { return level; }
 
 protected:
     /**
      * Constructs a Handler with the specified level
      * @param   level   Logging level of the object
      */
-    Handler(Level level) { this->level= level; }
+    Handler(Level::LevelEnums level) { this->level= level; }
 
-    Level level;    ///< Logging level of the handler
+    Level::LevelEnums level;    ///< Logging level of the handler
 };
 
 }   //namespace cpputilities
