@@ -1,6 +1,8 @@
 #include "CppUtilities/Logging/Logger.h"
 
+#include <cstdio>
 #include <mutex>
+#include <stdarg.h>
 
 namespace etsai {
 namespace cpputilities {
@@ -8,6 +10,7 @@ namespace cpputilities {
 using std::lock_guard;
 using std::make_pair;
 using std::mutex;
+using std::vsnprintf;
 
 unordered_map<string, Logger> Logger::loggers;
 static mutex loggerMutex;
@@ -40,15 +43,19 @@ void Logger::setLevel(Level::LevelEnums newLevel) {
     level= newLevel;
 }
 
-void Logger::log(Level::LevelEnums level, const string &msg) {
-    auto publish= [this, &level, &msg]() -> bool {
+void Logger::log(Level::LevelEnums level, const string &format, ...) {
+    va_list args;
+    auto publish= [this, &level](const string& msg) -> bool {
         for(auto it= handlers.begin(); it != handlers.end(); it++) {
             level >= (*it)->getLevel() && (*it)->publish(msg);
         }
         return true;
     };
     
-    (level >= this->level) && publish();
+    char buffer[256];
+    va_start(args, format);
+    vsnprintf(buffer, sizeof(buffer) - 1, format.c_str(), args);
+    (level >= this->level) && publish(buffer);
 }
 
 const unordered_set<Handler*>& Logger::getHandlers() const {

@@ -48,12 +48,13 @@ public:
      */
     void setLevel(Level::LevelEnums newLevel);
     /**
-     * Log a message of the specified level.  If a message's log level is below the set level, 
+     * Log a message of the specified level, up to 255 characters.  If a message's log level is below the set level, 
      * the message will not be passed on to the handlers
      * @param   level   The message's log level
-     * @param   msg     Message to log
+     * @param   format  The printf format for the log message
+     * @param   ...     Argument list for the format substitution
      */
-    void log(Level::LevelEnums level, const string &msg);
+    void log(Level::LevelEnums level, const string &format, ...);
 
     /**
      * Get a reference to the handlers associated with the logger
