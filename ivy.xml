@@ -1,0 +1,9 @@
+<ivy-module version="2.3">
+    <info organisation="com.github.etsai" module="cpp-utilities"/>
+    <publications>
+        <artifact name="cpp-utilities" ext="zip" />
+    </publications>
+    <dependencies>
+        <dependency org="com.github.etsai" name="javautils" rev="1.1.6" conf="default"/>
+    </dependencies>
+</ivy-module>
