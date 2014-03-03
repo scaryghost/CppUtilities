@@ -26,5 +26,8 @@ $(DIST):
 doc: $(DIST)
 	doxygen
 
+publish:
+	ant publish
+
 clean:
 	rm -f -R $(DIST) $(OBJS)

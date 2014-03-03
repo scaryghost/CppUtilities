@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="cpp-utilities" default="default" basedir="." >
     <description>Builds, tests, and runs the project CppUtilities.</description>
+    <property name="dist.dir" value="dist" />
     <target name="ivy-resolve">
         <ivy:resolve file="ivy.xml"/>
         <ivy:retrieve pattern="dist/libs/[artifact]-[revision].[ext]" sync="true" />
@@ -8,9 +9,13 @@
             <fileset dir="dist/libs" includes="**.jar"/>
         </path>
     </target>
+    <target name="zip">
+         <zip destfile="dist/cpp-utilities.zip" basedir="dist" includes="libcpputilities.a" />
+    </target>
     <target name="publish" depends="ivy-resolve" description="Publish this build into repository">
         <taskdef name="describe" classname="com.github.etsai.utils.ant.taskdef.Describe" classpathref="lib.path"/>
         <describe versionproperty="version" />
+        <zip destfile="dist/cpp-utilities.zip" basedir="dist" includes="libcpputilities.a" />
         <ivy:deliver deliverpattern="${dist.dir}/[artifact].[ext]" pubrevision="${version}"/>
         <ivy:publish pubrevision="${version}" resolver="default" >
             <artifacts pattern="${dist.dir}/[artifact].[ext]"/>
