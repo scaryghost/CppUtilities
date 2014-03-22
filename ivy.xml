@@ -1,9 +1,13 @@
 <ivy-module version="2.3">
     <info organisation="com.github.etsai" module="cpp-utilities"/>
+    <configurations defaultconf="run">
+    	<conf name="build" description="Only use for build rules" />
+        <conf name="run" description="Use for runtime dependency" />
+    </configurations>
     <publications>
         <artifact name="cpp-utilities" ext="zip" />
     </publications>
     <dependencies>
-        <dependency org="com.github.etsai" name="javautils" rev="1.1.6" conf="default"/>
+        <dependency org="com.github.etsai" name="javautils" rev="1.1.6" conf="build"/>
     </dependencies>
 </ivy-module>
