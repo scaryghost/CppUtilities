@@ -1,0 +1,3 @@
+[submodule "ToolBuild"]
+	path = ToolBuild
+	url = git@github.com:scaryghost/ToolBuild.git
