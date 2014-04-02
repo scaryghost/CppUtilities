@@ -5,8 +5,8 @@
 #pragma warning( disable : 4290 )
 #endif
 
-#include "CppUtilities/Logging/FileException.h"
-#include "CppUtilities/Logging/Handler.h"
+#include "FileException.h"
+#include "Handler.h"
 #include "CppUtilities/IO/File.h"
 
 #include <fstream>

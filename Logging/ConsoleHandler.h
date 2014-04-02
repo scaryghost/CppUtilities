@@ -1,7 +1,7 @@
 #ifndef ETSAI_CPPUTILITIES_CONSOLEHANDLER
 #define ETSAI_CPPUTILITIES_CONSOLEHANDLER
 
-#include "CppUtilities/Logging/Handler.h"
+#include "Handler.h"
 
 #include <iostream>
 

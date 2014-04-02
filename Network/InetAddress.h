@@ -1,8 +1,8 @@
 #ifndef ETSAI_CPPUTILITIES_INETADDRESS
 #define ETSAI_CPPUTILITIES_INETADDRESS
 
-#include "CppUtilities/Network/UnknownHostException.h"
-#include "CppUtilities/Network/SocketException.h"
+#include "UnknownHostException.h"
+#include "SocketException.h"
 
 #include <string>
 #include <unordered_map>

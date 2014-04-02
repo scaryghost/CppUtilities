@@ -1,7 +1,7 @@
 #ifndef ETSAI_CPPUTILITIES_OPTION
 #define ETSAI_CPPUTILITIES_OPTION
 
-#include "CppUtilities/Cli/Arguments.h"
+#include "Arguments.h"
 
 #include <functional>
 #include <string>

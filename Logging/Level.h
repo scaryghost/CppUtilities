@@ -1,7 +1,7 @@
 #ifndef ETSAI_CPPUTILITIES_LEVEL_H
 #define ETSAI_CPPUTILITIES_LEVEL_H
 
-#include "CppUtilities/Logging/InvalidArgumentException.h"
+#include "InvalidArgumentException.h"
 
 #include <climits>
 #include <functional>

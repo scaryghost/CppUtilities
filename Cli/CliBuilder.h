@@ -5,8 +5,8 @@
 #pragma warning( disable : 4290 )
 #endif
 
-#include "CppUtilities/Cli/CliOptionException.h"
-#include "CppUtilities/Cli/Option.h"
+#include "CliOptionException.h"
+#include "Option.h"
 
 #include <unordered_map>
 #include <unordered_set>

@@ -1,7 +1,7 @@
 #ifndef ETSAI_CPPUTILITIES_HANDLER_H
 #define ETSAI_CPPUTILITIES_HANDLER_H
 
-#include "CppUtilities/Logging/Level.h"
+#include "Level.h"
 
 #include <string>
 

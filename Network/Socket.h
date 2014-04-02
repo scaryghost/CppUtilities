@@ -1,7 +1,7 @@
 #ifndef STOUGHTON1004LIB_SOCKET_H
 #define STOUGHTON1004LIB_SOCKET_H
 
-#include "CppUtilities/Network/SocketException.h"
+#include "SocketException.h"
 
 #include <string>
 #ifdef WIN32

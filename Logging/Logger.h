@@ -1,8 +1,8 @@
 #ifndef ETSAI_CPPUTILITIES_LOGGER
 #define ETSAI_CPPUTILITIES_LOGGER
 
-#include "CppUtilities/Logging/Handler.h"
-#include "CppUtilities/Logging/Level.h"
+#include "Handler.h"
+#include "Level.h"
 
 #include <string>
 #include <unordered_map>
