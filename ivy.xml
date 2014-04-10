@@ -1,10 +1,11 @@
 <ivy-module version="2.3">
     <info organisation="com.github.etsai" module="cpputils"/>
-    <configurations defaultconf="run">
-    	<conf name="build" description="Only use for build rules" />
-        <conf name="run" description="Use for runtime dependency" />
+    <configurations>
+        <conf name="linux" description="Linux libraries" />
+        <conf name="windows" description="Windows libraries" />
     </configurations>
     <publications>
-        <artifact name="cpputils" ext="tar.gz" />
+        <artifact name="cpputils-linux" conf="linux" ext="tar.gz" />
+        <artifact name="cpputils-windows" conf="windows" ext="zip" />
     </publications>
 </ivy-module>
